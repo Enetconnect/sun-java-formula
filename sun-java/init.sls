@@ -54,8 +54,6 @@ unpack-jdk-archive:
     - name: {{ java.prefix }}
     - source: file://{{ archive_file }}
     - archive_format: {{ java.archive_type }}
-    - user: root
-    - group: root
   {% if grains['saltversioninfo'] < [2016, 11, 0] %}
      - if_missing: {{ java.java_realcmd }}
   {% endif %}
