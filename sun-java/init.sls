@@ -57,7 +57,6 @@ unpack-jdk-archive:
   {% if grains['saltversioninfo'] < [2016, 11, 0] %}
      - if_missing: {{ java.java_realcmd }}
   {% endif %}
-    - if_missing: {{ java.java_realcmd }}
     - onchanges:
       - cmd: download-jdk-archive
 
