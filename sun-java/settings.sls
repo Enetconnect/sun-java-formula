@@ -43,9 +43,9 @@
 {%- set java_real_home       = prefix + '/' + version_name %}
 {%- set jre_lib_sec          = java_real_home + '/jre/lib/security' %}
 {%- set java_symlink         = g.get('java_symlink', p.get('java_symlink', default_symlink )) %}
-{%- set java_realcmd         = g.get('java_realcmd', p.get('java_realcmd', java_real_home + '/bin/java' )) %}
+{%- set realcmd              = g.get('realcmd', p.get('realcmd', java_real_home + '/bin/java' )) %}
 {%- set javac_symlink        = java_symlink + 'c' %}
-{%- set javac_realcmd        = java_realcmd + 'c' %}
+{%- set javac_realcmd        = realcmd + 'c' %}
 {%- set alt_priority         = g.get('alt_priority', p.get('alt_priority', default_alt_priority )) %}
 
 {%- set java = {} %}
@@ -61,7 +61,7 @@
                       'jre_lib_sec'    : jre_lib_sec,
                       'archive_type'   : archive_type,
                       'java_symlink'   : java_symlink,
-                      'java_realcmd'   : java_realcmd,
+                      'realcmd'        : realcmd,
                       'javac_symlink'  : javac_symlink,
                       'javac_realcmd'  : javac_realcmd,
                       'alt_priority'   : alt_priority,
