@@ -89,7 +89,7 @@ update-javahome-symlink:
 
 # Game of Thrones - Redhat family issue #33
 # Restore contents of Fedora packages to current /usr/lib/java
-{%- if salt['file.directory_exists']('/usr/lib/java') and salt['grains.get']('os_family') == 'RedHat' %}
+{%- if salt['grains.get']('os_family') == 'RedHat' %}
 sun-java-usrlibjava-fedora-reinstall:
   pkg.installed:
     - pkgs:
