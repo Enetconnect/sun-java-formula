@@ -45,7 +45,7 @@
 {%- set java_symlink         = g.get('java_symlink', p.get('java_symlink', default_symlink )) %}
 {%- set java_realcmd         = g.get('realcmd', p.get('realcmd', java_real_home + '/bin/java' )) %}
 {%- set javac_symlink        = java_symlink + 'c' %}
-{%- set javac_realcmd        = realcmd + 'c' %}
+{%- set javac_realcmd        = java_realcmd + 'c' %}
 {%- set alt_priority         = g.get('alt_priority', p.get('alt_priority', default_alt_priority )) %}
 
 {%- set java = {} %}
