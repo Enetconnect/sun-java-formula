@@ -60,13 +60,24 @@ unpack-jdk-archive:
     - onchanges:
       - cmd: download-jdk-archive
 
-# Workaround for Redhat family: issue 33
-{%- if salt['file.directory_exists']('/usr/lib/java') and salt['grains.get']('os_family') == 'RedHat' %}
-sun-java-backup-usrlibjava:
-  cmd.run:
-    - name: mv /usr/lib/java /usr/lib/java_salted_backup
+# Game of Thrones - Redhat family issue #33
+# Fedora makes /usr/lib/java directory but tradition wants JAVA_HOME syslink.
+# Remove Fedora contents of /usr/lib/java pending new symlink (i.e. onchanges)
+{%- if salt['grains.get']('os_family') == 'RedHat' %}
+sun-java-usrlibjava-fedora-uninstall:
+  pkg.removed:
+    - pkgs:
+      - apache-commons-daemon
+      - javapackages-tools
+    - onchanges:
+      - archive: unpack-jdk-archive
     - require_in:
       - update-javahome-symlink
+  cmd.run:
+    ## just in case directory is still there.
+    - name: (test -d /usr/lib/java && mv /usr/lib/java /usr/lib/java_salted_backup) || true
+    - require:
+      - pkg: sun-java-usrlibjava-fedora-uninstall
 {%- endif %}
 
 update-javahome-symlink:
@@ -76,14 +87,18 @@ update-javahome-symlink:
     - require:
       - archive: unpack-jdk-archive
 
-# Workaround for Redhat family: issue 33
+# Game of Thrones - Redhat family issue #33
+# Restore contents of Fedora packages to current /usr/lib/java
 {%- if salt['file.directory_exists']('/usr/lib/java') and salt['grains.get']('os_family') == 'RedHat' %}
-sun-java-restore-usrlibjava:
-  cmd.run:
-    - name: mv /usr/lib/java_salted_backup/* /usr/lib/java && rm -fr /usr/lib/java_salted_backup
+sun-java-usrlibjava-fedora-reinstall:
+  pkg.installed:
+    - pkgs:
+      - apache-commons-daemon
+      - javapackages-tools
+    - onchanges:
+      - pkg: sun-java-usrlibjava-fedora-uninstall 
     - require:
-      - sun-java-backup-usrlibjava
-      - update-javahome-symlink
+      - file: update-javahome-symlink
 {%- endif %}
 
 remove-jdk-archive:
