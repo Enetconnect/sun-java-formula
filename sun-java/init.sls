@@ -60,12 +60,31 @@ unpack-jdk-archive:
     - onchanges:
       - cmd: download-jdk-archive
 
+# Workaround for Redhat family: issue 33
+{%- if salt['file.directory_exists']('/usr/lib/java') and salt['grains.get']('os_family') == 'RedHat' %}
+sun-java-backup-usrlibjava:
+  cmd.run:
+    - name: mv /usr/lib/java /usr/lib/java_salted_backup
+    - require_in:
+      - update-javahome-symlink
+{%- endif %}
+
 update-javahome-symlink:
   file.symlink:
     - name: {{ java.java_home }}
     - target: {{ java.java_real_home }}
     - require:
       - archive: unpack-jdk-archive
+
+# Workaround for Redhat family: issue 33
+{%- if salt['file.directory_exists']('/usr/lib/java') and salt['grains.get']('os_family') == 'RedHat' %}
+sun-java-restore-usrlibjava:
+  cmd.run:
+    - name: mv /usr/lib/java_salted_backup/* /usr/lib/java && rm -fr /usr/lib/java_salted_backup
+    - require:
+      - sun-java-backup-usrlibjava
+      - update-javahome-symlink
+{%- endif %}
 
 remove-jdk-archive:
   file.absent:
