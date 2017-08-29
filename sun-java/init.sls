@@ -14,7 +14,7 @@ java-install-dir:
     - mode: 755
     - makedirs: True
 
-# curl fails (rc=23) if file exists (interrupte formula?)
+# curl fails (rc=23) if file exists (interrupted formula?)
 # and test -f cannot detect corrupted archive
 sun-java-remove-prev-archive:
   file.absent:
