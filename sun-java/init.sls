@@ -60,8 +60,8 @@ unpack-jdk-archive:
     - onchanges:
       - cmd: download-jdk-archive
 
-# Game of Thrones - Redhat family issue #33
-# Fedora makes /usr/lib/java directory but tradition wants JAVA_HOME syslink.
+# Redhat family issue #33
+# Fedora makes /usr/lib/java directory but tradition wants JAVA_HOME symlink.
 # Remove Fedora contents of /usr/lib/java pending new symlink (i.e. onchanges)
 {%- if salt['grains.get']('os_family') == 'RedHat' %}
 sun-java-usrlibjava-fedora-uninstall:
@@ -87,7 +87,7 @@ update-javahome-symlink:
     - require:
       - archive: unpack-jdk-archive
 
-# Game of Thrones - Redhat family issue #33
+# Redhat family issue #33
 # Restore contents of Fedora packages to current /usr/lib/java
 {%- if salt['grains.get']('os_family') == 'RedHat' %}
 sun-java-usrlibjava-fedora-reinstall:
